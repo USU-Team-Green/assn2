@@ -1,4 +1,8 @@
-import tkinter
+import tkinter 
+from tkinter import filedialog
+
+
+from key_gen import generate_keys
 
 class View():
     children = []
@@ -19,10 +23,20 @@ class MainMenu(View):
             child.pack()
 
 class GetKeys(View):
+    def generate(self):
+        filedir = filedialog.askdirectory(title="Save in...")
+        print(filedir)
+        public, private = generate_keys()
+        with open('{}/public.key'.format(filedir), 'w') as f:
+            f.write(public)
+        with open('{}/private.key'.format(filedir), 'w') as f:
+            f.write(private)
+
     def __init__(self, master, back):
         super().__init__()
         self.children = [
             tkinter.Button(master, text="Back", command=back),        
+            tkinter.Button(master, text="Keys", command=self.generate),
         ]
         for child in self.children:
             child.pack()
@@ -44,34 +58,3 @@ class Decrypt(View):
         ]
         for child in self.children:
             child.pack()
-
-class MainLoopClass():
-    top = tkinter.Tk()
-
-    def __init__(self):
-        self.top.geometry("800x480")
-        self.go_menu()
-        self.top.mainloop()
-
-    def clear(self):
-        if hasattr(self,'children'):
-            self.children.clear()
-
-    def go_menu(self):
-        self.clear()
-        self.children = MainMenu(self.top, self.go_keys, self.go_encrypt, self.go_decrypt)
-
-    def go_keys(self):
-        self.clear()
-        self.children = GetKeys(self.top, self.go_menu)
-
-    def go_encrypt(self):
-        self.clear()
-        self.children = Encrypt(self.top, self.go_menu)
-
-    def go_decrypt(self):
-        self.clear()
-        self.children = Decrypt(self.top, self.go_menu)
-
-if __name__ == '__main__':
-    main = MainLoopClass()
