@@ -1,19 +1,77 @@
 import tkinter
 
-top = tkinter.Tk()
+class View():
+    children = []
+    
+    def clear(self):
+        for child in self.children:
+            child.destroy()
 
-topChildren = []
+class MainMenu(View):
+    def __init__(self, master, go_keys, go_e, go_d):
+        super().__init__()
+        self.children = [
+             tkinter.Button(master, text="Generate Public and Private Key", command=go_keys),
+             tkinter.Button(master, text="Encrypt Text", command=go_e),
+             tkinter.Button(master, text="Decrypt Text", command=go_d),
+        ]
+        for child in self.children:
+            child.pack()
 
-genKeys = tkinter.Button(top, text="Generate Public and Private Key")
-topChildren.append(genKeys)
+class GetKeys(View):
+    def __init__(self, master, back):
+        super().__init__()
+        self.children = [
+            tkinter.Button(master, text="Back", command=back),        
+        ]
+        for child in self.children:
+            child.pack()
 
-encrypt = tkinter.Button(top, text="Encrypt Text")
-topChildren.append(encrypt)
+class Encrypt(View):
+    def __init__(self, master, back):
+        super().__init__()
+        self.children = [
+            tkinter.Button(master, text="Back", command=back),        
+        ]
+        for child in self.children:
+            child.pack()
 
-decrypt = tkinter.Button(top, text="Decrypt Text")
-topChildren.append(decrypt)
+class Decrypt(View):
+    def __init__(self, master, back):
+        super().__init__()
+        self.children = [
+            tkinter.Button(master, text="Back", command=back),        
+        ]
+        for child in self.children:
+            child.pack()
 
-for child in topChildren:
-    child.pack()
+class MainLoopClass():
+    top = tkinter.Tk()
 
-top.mainloop()
+    def __init__(self):
+        self.top.geometry("800x480")
+        self.go_menu()
+        self.top.mainloop()
+
+    def clear(self):
+        if hasattr(self,'children'):
+            self.children.clear()
+
+    def go_menu(self):
+        self.clear()
+        self.children = MainMenu(self.top, self.go_keys, self.go_encrypt, self.go_decrypt)
+
+    def go_keys(self):
+        self.clear()
+        self.children = GetKeys(self.top, self.go_menu)
+
+    def go_encrypt(self):
+        self.clear()
+        self.children = Encrypt(self.top, self.go_menu)
+
+    def go_decrypt(self):
+        self.clear()
+        self.children = Decrypt(self.top, self.go_menu)
+
+if __name__ == '__main__':
+    main = MainLoopClass()
