@@ -43,8 +43,21 @@ def get_blocks(m):
 
 def encrypt(m, n, e):
     blocks = get_blocks(m)
-    return ''.join([str(pow(block, e, n)) for block in blocks])
+    return ','.join([str(pow(block, e, n)) for block in blocks])
 
+def get_text(blocks):
+    message = []
+    for block in blocks:
+        blockM = []
+        for i in range(BLOCK_SIZE - 1, -1, -1):
+            asciiNum = block // (BYTE_SIZE ** i)
+            block = block % (BYTE_SIZE ** i)
+            blockM.insert(0, chr(asciiNum))
+        message.extend(blockM)
+    return "".join(message).strip()
 
-
+def decrypt(c, n, d):
+    print(c.split(','))
+    decryptedBlocks = [pow(int(charNum), d, n) for charNum in c.split(',')]
+    return get_text(decryptedBlocks)
 
