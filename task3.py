@@ -52,7 +52,7 @@ def brute_force(plain_text, cipher_text):
         contains_a_zero = contains_zero(i)
 
         if contains_a_zero == False:
-            print('testing ',i )
+            #print('testing ',i )
 
             test_key_string = str(i)
 
@@ -82,11 +82,12 @@ def remove_underscores(plain_text):
 #test case
 #you need to find the key
 #ntneudihyyeodkoefte
+#output 3421
 
 if __name__ == '__main__':
 
-    plain_text_original = raw_input('plain text: ')
-    cipher_text = raw_input('cipher text: ')
+    plain_text_original = raw_input('Plain Text: ')
+    cipher_text = raw_input('Cipher Text: ')
 
     plain_text = condense_message(plain_text_original)
 
