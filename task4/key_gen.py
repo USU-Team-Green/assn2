@@ -4,7 +4,7 @@ import sympy
 import os
 
 BYTE_SIZE=256
-BLOCK_SIZE=128
+BLOCK_SIZE=16
 
 def lcm(a, b):
     return a * b // math.gcd(a, b)
@@ -21,7 +21,7 @@ def inverse(x, m): # for getting modular inverse (d)
 
 
 def generate_keys():
-    p, q = sympy.nextprime(int.from_bytes(os.urandom(15), byteorder='big')), sympy.nextprime(int.from_bytes(os.urandom(15), byteorder='big'))
+    p, q = sympy.nextprime(int.from_bytes(os.urandom(BLOCK_SIZE + 1), byteorder='big')), sympy.nextprime(int.from_bytes(os.urandom(BLOCK_SIZE + 1), byteorder='big'))
     n = p * q
     lambda_n = lcm(p - 1, q - 1)
     e = 65537
@@ -52,12 +52,32 @@ def get_text(blocks):
         for i in range(BLOCK_SIZE - 1, -1, -1):
             asciiNum = block // (BYTE_SIZE ** i)
             block = block % (BYTE_SIZE ** i)
+            print(asciiNum)
             blockM.insert(0, chr(asciiNum))
         message.extend(blockM)
     return "".join(message).strip()
 
 def decrypt(c, n, d):
-    print(c.split(','))
     decryptedBlocks = [pow(int(charNum), d, n) for charNum in c.split(',')]
     return get_text(decryptedBlocks)
 
+
+def test_key_gen():
+    public, private = generate_keys()
+    n, e = public.split('$')
+    n = int(n)
+    e = int(e)
+    d = int(private)
+    m = 1234
+    assert m == pow(pow(m, e, n), d, n)
+
+def test_encrypt_decrypt():
+    public, private = generate_keys()
+    n, e = public.split('$')
+    n = int(n)
+    e = int(e)
+    d = int(private)
+    m = 'hello world'
+    print(decrypt(encrypt(m, n, e), d, e))
+
+    
