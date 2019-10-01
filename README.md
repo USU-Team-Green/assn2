@@ -1,4 +1,6 @@
 # Assignment 2
+If a program isn't running, every package needed should be listed in requirements.txt.
+To install them all, run `pip3 install -r requirements.txt`
 
 ## Task 1
 
