@@ -3,6 +3,9 @@ import base64
 import sympy
 import os
 
+BYTE_SIZE=256
+BLOCK_SIZE=128
+
 def lcm(a, b):
     return a * b // math.gcd(a, b)
 
@@ -24,3 +27,24 @@ def generate_keys():
     e = 65537
     d = inverse(e, lambda_n)
     return str(n) + "$" + str(e), str(d)
+
+def get_blocks(m):
+    m = m.encode('ascii')
+    blocks = []
+    for blockStart in range(0, len(m), BLOCK_SIZE):
+        block = 0
+        for i in range(blockStart, blockStart + BLOCK_SIZE):
+            if i < len(m):
+                block += m[i] * BYTE_SIZE ** (i % BLOCK_SIZE)
+            else:
+                block += 32 * BYTE_SIZE ** (i % BLOCK_SIZE)
+        blocks.append(block)
+    return blocks
+
+def encrypt(m, n, e):
+    blocks = get_blocks(m)
+    return ''.join([str(pow(block, e, n)) for block in blocks])
+
+
+
+
