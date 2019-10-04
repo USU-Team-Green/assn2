@@ -1,34 +1,41 @@
 import math, random
 from pip._vendor.distlib.compat import raw_input
 
+#Aaron Adams
 
+def columnar_transpose(key,msg):
 
-def encrypt(key,msg):
-    cipher = ""
+    cipher_text = ""
 
-    k_indx = 0
+    key_index = 0
 
-    msg_len = float(len(msg))
-    msg_lst = list(msg)
-    key_lst = sorted(list(key))
+    message_length = float(len(msg))
 
-    col = len(key)
+    message_list = list(msg)
 
-    row = int(math.ceil(msg_len / col))
+    key_list = sorted(list(key))
 
-    fill_null = int((row * col) - msg_len)
-    msg_lst.extend('_' * fill_null)
+    column = len(key)
 
-    matrix = [msg_lst[i: i + col]
-              for i in range(0, len(msg_lst), col)]
+    row = int(math.ceil(message_length / column))
 
-    for _ in range(col):
-        curr_idx = key.index(key_lst[k_indx])
-        cipher += ''.join([row[curr_idx]
+    fill_null = int((row * column) - message_length)
+
+    message_list.extend('_' * fill_null)
+
+    matrix = [message_list[i: i + column]
+              for i in range(0, len(message_list), column)]
+
+    for _ in range(column):
+
+        curr_idx = key.index(key_list[key_index])
+
+        cipher_text += ''.join([row[curr_idx]
                            for row in matrix])
-        k_indx += 1
 
-    return cipher
+        key_index += 1
+
+    return cipher_text
  
 
 
@@ -56,7 +63,7 @@ def brute_force(plain_text, cipher_text):
 
             test_key_string = str(i)
 
-            test_cipher = encrypt(test_key_string, plain_text)
+            test_cipher = columnar_transpose(test_key_string, plain_text)
             test_cipher_final = remove_underscores(test_cipher)
 
             if test_cipher_final == cipher_text:
