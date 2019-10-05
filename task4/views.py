@@ -25,7 +25,6 @@ class MainMenu(View):
 class GetKeys(View):
     def generate(self):
         filedir = filedialog.askdirectory(title="Save in...")
-        print(filedir)
         public, private = generate_keys()
         with open('{}/public.key'.format(filedir), 'w') as f:
             f.write(public)
@@ -43,9 +42,8 @@ class GetKeys(View):
 
 class Encrypt(View):
     def encryptButton(self):
-        self.retrieve()
+        self.m = self.entry.get()
         cipher = encrypt(self.m, self.n, self.e)
-        self.resultText.config(state='normal')
         self.resultText.insert(0,cipher)
         self.resultText.config(state='readonly')
 
@@ -53,7 +51,7 @@ class Encrypt(View):
         self.n, self.e = rawstringpublic.split('$')
         self.n = int(self.n)
         self.e = int(self.e)
-        self.m = self.entry.get()
+
 
     def retrieve(self):
         filedirpub = filedialog.askopenfilename(title="Find Public Key File...")
@@ -61,7 +59,7 @@ class Encrypt(View):
         with open('{}'.format(filedirpub), 'r') as f:
             contentspub = f.read()
 
-        readKey(contentspub)
+        self.readKey(contentspub)
     def __init__(self, master, back):
         super().__init__()
         self.m = ''
@@ -69,7 +67,6 @@ class Encrypt(View):
         self.e = ''
         
         self.resultText = tkinter.Entry(master)
-        self.resultText.config(state='readonly')
         self.entry = tkinter.Entry(master)
         self.children = [
             tkinter.Button(master, text="Back", command=back),        
@@ -77,6 +74,7 @@ class Encrypt(View):
             tkinter.Button(master, text="Encrypt", command=self.encryptButton),        
             tkinter.Label(master, text="Plain Text"),
             self.entry,
+            tkinter.Label(master, text="Result"),
             self.resultText
         ]
         for child in self.children:
@@ -84,9 +82,8 @@ class Encrypt(View):
 
 class Decrypt(View):
     def decryptButton(self):
-        self.retrieve()
+        self.c = self.entry.get()
         result = decrypt(self.c, self.n, self.d)
-        self.resultText.config(state='normal')
         self.resultText.insert(0,result)
         self.resultText.config(state='readonly')
 
@@ -94,7 +91,6 @@ class Decrypt(View):
         self.n, self.e = rawstringpublic.split('$')
         self.n = int(self.n)
         self.e = int(self.e)
-        self.c = self.entry.get()
         self.d = int(rawstringprivate)
 
     def retrieve(self):
@@ -107,7 +103,7 @@ class Decrypt(View):
         with open('{}'.format(filedirpriv), 'r') as f:
             contentspriv = f.read()
 
-        readKey(contentspriv, contentspub)
+        self.readKey(contentspriv, contentspub)
 
     def __init__(self, master, back):
         super().__init__()
@@ -116,7 +112,6 @@ class Decrypt(View):
         self.c = ''
         self.d = ''
         self.resultText = tkinter.Entry(master)
-        self.resultText.config(state='readonly')
         self.entry = tkinter.Entry(master)
         self.children = [
             tkinter.Button(master, text="Back", command=back),        
@@ -124,6 +119,7 @@ class Decrypt(View):
             tkinter.Button(master, text="Decrypt", command=self.decryptButton),        
             tkinter.Label(master, text="Cipher Text"),
             self.entry,
+            tkinter.Label(master, text="Result"),
             self.resultText
         ]
         for child in self.children:
