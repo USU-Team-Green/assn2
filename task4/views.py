@@ -43,10 +43,10 @@ class GetKeys(View):
 
 class Encrypt(View):
     def encryptButton(self):
-        self.retrieve(self.m, self.n, self.e)
-        cipher = encrypt(self.key)
+        self.retrieve()
+        cipher = encrypt(self.m, self.n, self.e)
         self.resultText.config(state='normal')
-        self.resultText.insert(0,'test')
+        self.resultText.insert(0,cipher)
         self.resultText.config(state='readonly')
 
     def readKey(self, rawstringpublic):
@@ -64,6 +64,10 @@ class Encrypt(View):
         readKey(contentspub)
     def __init__(self, master, back):
         super().__init__()
+        self.m = ''
+        self.n = ''
+        self.e = ''
+        
         self.resultText = tkinter.Entry(master)
         self.resultText.config(state='readonly')
         self.entry = tkinter.Entry(master)
@@ -107,9 +111,13 @@ class Decrypt(View):
 
     def __init__(self, master, back):
         super().__init__()
+        self.n = ''
+        self.e = ''
+        self.c = ''
+        self.d = ''
         self.resultText = tkinter.Entry(master)
         self.resultText.config(state='readonly')
-        self.entry = tkinter.Entry(master),
+        self.entry = tkinter.Entry(master)
         self.children = [
             tkinter.Button(master, text="Back", command=back),        
             tkinter.Button(master, text="get key", command=self.retrieve),
